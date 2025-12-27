@@ -4,109 +4,92 @@
  */
 const calculateFitScore = (studentProfile, university) => {
   let score = 0;
-  let maxScore = 0;
 
-  // 1. Academic Compatibility (30 points)
-  maxScore += 30;
+  // Weights (Total 100)
+  const weights = {
+    academic: 35,
+    financial: 25,
+    preference: 20,
+    quality: 20
+  };
+
+  // 1. Academic Compatibility (35 points) - GPA & Test Scores
+  let academicScore = 0;
+  let academicCount = 0;
 
   // GPA Match
   if (studentProfile.academicHistory?.gpa && university.admissions?.requirements?.minGPA) {
-    const gpaScore = Math.min((studentProfile.academicHistory.gpa / university.admissions.requirements.minGPA) * 15, 15);
-    score += gpaScore;
+    const gpaRatio = studentProfile.academicHistory.gpa / university.admissions.requirements.minGPA;
+    academicScore += Math.min(gpaRatio * 17.5, 17.5); // Max 17.5
+    academicCount++;
   }
 
-  // Major Availability
-  if (studentProfile.interests?.desiredMajor?.length > 0 && university.academics?.majorsOffered) {
-    const majorMatch = studentProfile.interests.desiredMajor.some(major =>
-      university.academics.majorsOffered.some(offered =>
-        offered.toLowerCase().includes(major.toLowerCase())
-      )
-    );
-    score += majorMatch ? 15 : 0;
-  }
-
-  // 2. Test Scores Compatibility (25 points)
-  maxScore += 25;
-  let testScorePoints = 0;
-  let testScoreCount = 0;
-
-  // SAT
+  // Test Scores (SAT/IELTS/TOEFL)
   if (studentProfile.testScores?.sat && university.admissions?.requirements?.testScores?.sat?.min) {
-    const satMin = university.admissions.requirements.testScores.sat.min;
-    if (studentProfile.testScores.sat >= satMin) {
-      testScorePoints += 5;
-    }
-    testScoreCount++;
+    if (studentProfile.testScores.sat >= university.admissions.requirements.testScores.sat.min) academicScore += 17.5;
+    else academicScore += (studentProfile.testScores.sat / university.admissions.requirements.testScores.sat.min) * 10;
+    academicCount++;
+  } else if (studentProfile.testScores?.ielts && university.admissions?.requirements?.testScores?.ielts?.min) {
+    if (studentProfile.testScores.ielts >= university.admissions.requirements.testScores.ielts.min) academicScore += 17.5;
+    academicCount++;
   }
 
-  // TOEFL
-  if (studentProfile.testScores?.toefl && university.admissions?.requirements?.testScores?.toefl?.min) {
-    const toeflMin = university.admissions.requirements.testScores.toefl.min;
-    if (studentProfile.testScores.toefl >= toeflMin) {
-      testScorePoints += 5;
-    }
-    testScoreCount++;
-  }
+  score += academicCount > 0 ? Math.min(academicScore, weights.academic) : (weights.academic * 0.5); // Baseline if half-data
 
-  // IELTS
-  if (studentProfile.testScores?.ielts && university.admissions?.requirements?.testScores?.ielts?.min) {
-    const ieltsMin = university.admissions.requirements.testScores.ielts.min;
-    if (studentProfile.testScores.ielts >= ieltsMin) {
-      testScorePoints += 5;
-    }
-    testScoreCount++;
-  }
-
-  // GRE
-  if (studentProfile.testScores?.gre && university.admissions?.requirements?.testScores?.gre?.min) {
-    const greMin = university.admissions.requirements.testScores.gre.min;
-    if (studentProfile.testScores.gre >= greMin) {
-      testScorePoints += 5;
-    }
-    testScoreCount++;
-  }
-
-  score += testScoreCount > 0 ? testScorePoints : 0;
-
-  // 3. Financial Fit (20 points)
-  maxScore += 20;
+  // 2. Financial Fit (25 points) - Budget vs Tuition
+  let financialScore = 0;
   if (studentProfile.budget?.maxTuition && university.financials?.tuitionFee?.international?.min) {
     const tuitionMin = university.financials.tuitionFee.international.min;
     const tuitionMax = university.financials.tuitionFee.international.max || tuitionMin;
     const avgTuition = (tuitionMin + tuitionMax) / 2;
 
     if (avgTuition <= studentProfile.budget.maxTuition) {
-      score += 20;
-    } else if (avgTuition <= studentProfile.budget.maxTuition * 1.2) {
-      score += 10;
+      financialScore = weights.financial;
+    } else if (avgTuition <= studentProfile.budget.maxTuition * 1.3) {
+      financialScore = weights.financial * 0.6;
+    } else if (avgTuition <= studentProfile.budget.maxTuition * 1.6) {
+      financialScore = weights.financial * 0.3;
     }
+  } else {
+    financialScore = weights.financial * 0.5; // Neutral
+  }
+  score += financialScore;
+
+  // 3. Preference (20 points) - Majors & Country
+  let preferenceScore = 0;
+
+  // Major Match (10 pts)
+  if (studentProfile.interests?.desiredMajor?.length > 0 && university.academics?.majorsOffered) {
+    const majorMatch = studentProfile.interests.desiredMajor.some(major =>
+      university.academics.majorsOffered.some(offered =>
+        offered.toLowerCase().includes(major.toLowerCase())
+      )
+    );
+    if (majorMatch) preferenceScore += 10;
   }
 
-  // 4. Location Preference (15 points)
-  maxScore += 15;
+  // Country/Location Match (10 pts)
   if (studentProfile.interests?.preferredStudyDestinations?.length > 0) {
     const locationMatch = studentProfile.interests.preferredStudyDestinations.some(dest =>
-      university.country?.toLowerCase().includes(dest.toLowerCase()) ||
-      university.city?.toLowerCase().includes(dest.toLowerCase())
+      university.country?.toLowerCase().includes(dest.toLowerCase())
     );
-    score += locationMatch ? 15 : 0;
+    if (locationMatch) preferenceScore += 10;
   }
 
-  // 5. Campus Preferences (10 points)
-  maxScore += 10;
-  if (studentProfile.interests?.campusPreferences?.length > 0 && university.campusLife?.campusType) {
-    const campusMatch = studentProfile.interests.campusPreferences.some(pref =>
-      university.campusLife.campusType.toLowerCase().includes(pref.toLowerCase())
-    );
-    score += campusMatch ? 10 : 0;
-  }
+  score += preferenceScore > 0 ? preferenceScore : (weights.preference * 0.4);
 
-  // Calculate final percentage
-  const fitScore = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+  // 4. Quality (20 points) - Ranking & Research
+  let qualityScore = 0;
+  const globalRank = university.ranking?.global || 1000;
 
-  // Boost for valid data to avoid 0s if data is sparse but matching
-  // If we have > 0 score but low maxScore due to missing matching fields, normalize it slightly
-  return Math.min(fitScore, 100);
+  if (globalRank <= 100) qualityScore = weights.quality;
+  else if (globalRank <= 500) qualityScore = weights.quality * 0.75;
+  else if (globalRank <= 1000) qualityScore = weights.quality * 0.5;
+  else qualityScore = weights.quality * 0.25;
+
+  score += qualityScore;
+
+  return Math.min(Math.round(score), 100);
 };
 
 // Helper to safely check nested properties

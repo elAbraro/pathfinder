@@ -13,7 +13,7 @@ const universitySchema = new mongoose.Schema({
   city: String,
   ranking: {
     dataset: [{
-      provider: { type: String, enum: ['QS', 'THE', 'ARWU', 'USNews', 'Simulated'] },
+      provider: { type: String, enum: ['QS', 'THE', 'ARWU', 'USNews', 'Simulated', 'Simulated Global', 'OpenAlex Proxy'] },
       rank: Number,
       year: Number
     }],
@@ -142,4 +142,4 @@ const universitySchema = new mongoose.Schema({
 // Index for search optimization
 universitySchema.index({ name: 'text', 'academics.majorsOffered': 'text', country: 1 });
 
-module.exports = mongoose.model('University', universitySchema);
+module.exports = mongoose.models.University || mongoose.model('University', universitySchema);

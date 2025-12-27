@@ -3,7 +3,7 @@ const DataSnapshot = require('../models/dataSnapshot');
 const { fetchMasterData } = require('./pipeline/ingestMaster');
 const { fetchResearchMetrics } = require('./pipeline/ingestResearch');
 const { getRankings } = require('./pipeline/ingestRankings');
-const { normalizeUniversity } = require('./pipeline/normalize');
+const { normalizeUniversityData } = require('./pipeline/normalize');
 
 const syncData = async () => {
     console.log('🚀 Starting Advanced Data Pipeline...');
@@ -27,11 +27,10 @@ const syncData = async () => {
             const batch = subset.slice(i, i + BATCH_SIZE);
             const promises = batch.map(async (uni) => {
                 // Parallel fetch for each uni in batch
-                const [research, rankings] = await Promise.all([
-                    fetchResearchMetrics(uni.name),
-                    getRankings(uni.name, uni.country)
-                ]);
-                return normalizeUniversity(uni, research, rankings);
+                const research = await fetchResearchMetrics(uni.name);
+                const rankings = getRankings(uni.name, uni.country, research);
+
+                return normalizeUniversityData(uni, research, rankings);
             });
 
             const results = await Promise.all(promises);
