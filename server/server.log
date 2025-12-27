@@ -1,0 +1,196 @@
+Initializing Scheduler...
+Scheduler active: Data Sync set for Sunday 00:00
+🚀 Server running on port 5000
+✅ MongoDB Connected Successfully
+Update Status Probe: { universityId: '694f6fc50b7350ecdfcb8dff', shortlistCount: 9 }
+Item 0: null
+Item 1: null
+Item 2: null
+Item 3: null
+Item 4: null
+Item 5: null
+Item 6: null
+Item 7: null
+Item 8: {
+  ranking: { global: 1, national: 7, dataset: [] },
+  researchMetrics: { source: 'OpenAlex' },
+  pipelineMetadata: { sources: [], processingErrors: [] },
+  academics: {
+    majorsOffered: [
+      'Computer Science',
+      'Data Science',
+      'Mechanical Engineering',
+      'Electrical Engineering',
+      'Physics',
+      'Mathematics',
+      'Robotics',
+      'Economics',
+      'Psychology',
+      'Environmental Science',
+      'BBA'
+    ],
+    coursesHighlight: [ [Object], [Object] ],
+    facultyStrength: 2383,
+    studentTeacherRatio: '3:1'
+  },
+  admissions: {
+    requirements: { testScores: [Object], minGPA: 3.6, documents: [] },
+    acceptanceRate: 0.04,
+    applicationDeadlines: [],
+    applicationTimeline: [],
+    documentChecklist: []
+  },
+  financials: {
+    tuitionFee: { international: [Object], currency: 'USD' },
+    scholarships: [],
+    financialAidAvailable: true
+  },
+  campusLife: {
+    campusType: 'Urban',
+    facilities: [
+      'Modern Library',
+      'Student Center',
+      'Sports Complex',
+      'Research Labs'
+    ],
+    clubs: [
+      'SGA',
+      'Debate Society',
+      'Tech Club',
+      'E-Sports',
+      'Cultural Association'
+    ],
+    sports: []
+  },
+  outcomes: { employmentRate: 0.98, averageSalary: 56582, topEmployers: [] },
+  contact: {
+    website: 'https://www.mit.edu',
+    email: 'admissions@mit.edu',
+    phone: '+1 555-0123'
+  },
+  _id: new ObjectId('694f6fc50b7350ecdfcb8dff'),
+  name: 'Massachusetts Institute of Technology (MIT)',
+  country: 'USA',
+  city: 'Cambridge',
+  images: [
+    'https://images.unsplash.com/photo-1564981797816-1043664bf78d?auto=format&fit=crop&w=800&q=80'
+  ],
+  description: 'A prestigious tech-focused university located in Cambridge, USA. Known for excellence in teaching and research.',
+  testimonials: [
+    {
+      studentName: 'John Doe',
+      graduationYear: 2023,
+      major: 'Computer Science',
+      testimonial: 'Great experience, amazing campus life.',
+      rating: 5,
+      _id: new ObjectId('694f6fc50b7350ecdfcb8e02')
+    },
+    {
+      studentName: 'Jane Smith',
+      graduationYear: 2022,
+      major: 'Data Science',
+      testimonial: 'Challenging academics but worth it.',
+      rating: 4,
+      _id: new ObjectId('694f6fc50b7350ecdfcb8e03')
+    }
+  ],
+  __v: 0,
+  createdAt: 2025-12-27T05:33:57.264Z,
+  updatedAt: 2025-12-27T05:33:57.264Z
+}
+Update Status Probe: { universityId: '694f6fc50b7350ecdfcb8dff', shortlistCount: 9 }
+Item 0: null
+Item 1: null
+Item 2: null
+Item 3: null
+Item 4: null
+Item 5: null
+Item 6: null
+Item 7: null
+Item 8: {
+  ranking: { global: 1, national: 7, dataset: [] },
+  researchMetrics: { source: 'OpenAlex' },
+  pipelineMetadata: { sources: [], processingErrors: [] },
+  academics: {
+    majorsOffered: [
+      'Computer Science',
+      'Data Science',
+      'Mechanical Engineering',
+      'Electrical Engineering',
+      'Physics',
+      'Mathematics',
+      'Robotics',
+      'Economics',
+      'Psychology',
+      'Environmental Science',
+      'BBA'
+    ],
+    coursesHighlight: [ [Object], [Object] ],
+    facultyStrength: 2383,
+    studentTeacherRatio: '3:1'
+  },
+  admissions: {
+    requirements: { testScores: [Object], minGPA: 3.6, documents: [] },
+    acceptanceRate: 0.04,
+    applicationDeadlines: [],
+    applicationTimeline: [],
+    documentChecklist: []
+  },
+  financials: {
+    tuitionFee: { international: [Object], currency: 'USD' },
+    scholarships: [],
+    financialAidAvailable: true
+  },
+  campusLife: {
+    campusType: 'Urban',
+    facilities: [
+      'Modern Library',
+      'Student Center',
+      'Sports Complex',
+      'Research Labs'
+    ],
+    clubs: [
+      'SGA',
+      'Debate Society',
+      'Tech Club',
+      'E-Sports',
+      'Cultural Association'
+    ],
+    sports: []
+  },
+  outcomes: { employmentRate: 0.98, averageSalary: 56582, topEmployers: [] },
+  contact: {
+    website: 'https://www.mit.edu',
+    email: 'admissions@mit.edu',
+    phone: '+1 555-0123'
+  },
+  _id: new ObjectId('694f6fc50b7350ecdfcb8dff'),
+  name: 'Massachusetts Institute of Technology (MIT)',
+  country: 'USA',
+  city: 'Cambridge',
+  images: [
+    'https://images.unsplash.com/photo-1564981797816-1043664bf78d?auto=format&fit=crop&w=800&q=80'
+  ],
+  description: 'A prestigious tech-focused university located in Cambridge, USA. Known for excellence in teaching and research.',
+  testimonials: [
+    {
+      studentName: 'John Doe',
+      graduationYear: 2023,
+      major: 'Computer Science',
+      testimonial: 'Great experience, amazing campus life.',
+      rating: 5,
+      _id: new ObjectId('694f6fc50b7350ecdfcb8e02')
+    },
+    {
+      studentName: 'Jane Smith',
+      graduationYear: 2022,
+      major: 'Data Science',
+      testimonial: 'Challenging academics but worth it.',
+      rating: 4,
+      _id: new ObjectId('694f6fc50b7350ecdfcb8e03')
+    }
+  ],
+  __v: 0,
+  createdAt: 2025-12-27T05:33:57.264Z,
+  updatedAt: 2025-12-27T05:33:57.264Z
+}
