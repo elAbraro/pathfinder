@@ -1,48 +1,59 @@
-// server/services/aiEnricher.js
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require('axios');
 require("dotenv").config();
 
-// Initialize Gemini client
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Configuration
+// Strict Separation: Enrichment uses Ollama
+const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434/api/generate';
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3';
 
 /**
- * Enrich university data using Gemini 2.0 Flash
+ * Enrich university data using Local LLM (Ollama) ONLY.
  * @param {string} universityName
  * @param {string} country
  * @returns {Object|null} JSON data or null on error
  */
 const enrichUniversityData = async (universityName, country) => {
-    try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-        const prompt = `
-Provide accurate, real-world data for the university "${universityName}" in "${country}" as a valid JSON object. 
+  const prompt = `
+Provide accurate, real-world data for the university "${universityName}" in "${country}" as a valid JSON object.
 Do NOT return markdown. Return ONLY the JSON string.
-Ensure realistic estimates if exact numbers are unavailable.
+Estimate based on typical academic calendars if exact current-year dates are unavailable.
 
 Required JSON Structure:
 {
   "ranking": { "global": Number, "national": Number },
-  "tuition": { "underic": Number, "graduate": Number },
+  "tuition": { "undergraduate": Number, "graduate": Number, "currency": "Code (e.g. USD)" },
   "acceptanceRate": Number,
   "description": "Short 2-sentence summary",
   "popularMajors": ["Major 1", "Major 2", "Major 3", "Major 4"],
-  "features": ["Feature 1", "Feature 2"],
-  "location": { "city": "City Name", "state": "State/Region" }
+  "applicationDeadlines": [
+    { "term": "Fall 2025", "deadline": "YYYY-MM-DD" },
+    { "term": "Spring 2026", "deadline": "YYYY-MM-DD" }
+  ],
+  "scholarships": [
+    { "name": "Scholarship Name", "amount": Number, "criteria": "Brief criteria" }
+  ]
 }
     `;
 
-        const result = await model.generateContent(prompt);
-        const text = (await result.response).text();
+  try {
+    console.log(`Enriching via Ollama (${OLLAMA_MODEL})...`);
+    const response = await axios.post(OLLAMA_URL, {
+      model: OLLAMA_MODEL,
+      prompt: prompt + " Respond with JSON only.",
+      stream: false,
+      format: "json" // Force JSON mode if model supports it
+    });
 
-        // Remove any accidental markdown
-        const jsonStr = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    const text = response.data.response;
 
-        return JSON.parse(jsonStr);
-    } catch (error) {
-        console.error("AI Enrichment Failed:", error);
-        return null;
-    }
+    // Clean and parse
+    const jsonStr = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    return JSON.parse(jsonStr);
+
+  } catch (error) {
+    console.error(`AI Enrichment Failed (Ollama):`, error.message);
+    return null;
+  }
 };
 
 module.exports = { enrichUniversityData };

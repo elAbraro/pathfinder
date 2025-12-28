@@ -92,15 +92,41 @@ router.get('/:id', async (req, res) => {
         const enrichedData = await enrichUniversityData(university.name, university.country);
 
         if (enrichedData) {
-          if (enrichedData.ranking) university.ranking = enrichedData.ranking;
-          if (enrichedData.tuition) university.tuition = {
-            undergraduate: enrichedData.tuition.underic || enrichedData.tuition.undergraduate || 15000,
-            graduate: enrichedData.tuition.graduate || 20000,
-            currency: 'USD'
-          };
+          if (enrichedData.ranking) {
+            university.ranking.global = enrichedData.ranking.global;
+            university.ranking.national = enrichedData.ranking.national;
+          }
+
+          if (enrichedData.tuition) {
+            const tuitionVal = enrichedData.tuition.undergraduate || 15000;
+            university.financials.tuitionFee.international = {
+              min: tuitionVal,
+              max: Math.floor(tuitionVal * 1.2)
+            };
+            university.financials.tuitionFee.currency = enrichedData.tuition.currency || 'USD';
+          }
+
           if (enrichedData.acceptanceRate) university.admissions.acceptanceRate = enrichedData.acceptanceRate;
           if (enrichedData.description) university.description = enrichedData.description;
           if (enrichedData.popularMajors) university.academics.popularMajors = enrichedData.popularMajors;
+
+          // New Fields
+          if (enrichedData.applicationDeadlines && Array.isArray(enrichedData.applicationDeadlines)) {
+            university.admissions.applicationDeadlines = enrichedData.applicationDeadlines.map(d => ({
+              term: d.term.split(' ')[0], // "Fall", "Spring"
+              deadline: new Date(d.deadline),
+              year: parseInt(d.term.split(' ')[1]) || new Date().getFullYear() + 1
+            }));
+          }
+
+          if (enrichedData.scholarships && Array.isArray(enrichedData.scholarships)) {
+            university.financials.scholarships = enrichedData.scholarships.map(s => ({
+              name: s.name,
+              amount: s.amount,
+              criteria: s.criteria
+            }));
+          }
+
 
           await university.save();
         }
