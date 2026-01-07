@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 font-sans transition-colors duration-300;
+    background-image: radial-gradient(circle at 100% 0%, #eef2ff 0%, transparent 25%),
+      radial-gradient(circle at 0% 100%, #eff6ff 0%, transparent 25%);
+  }
+
+  .dark body {
+    background-color: #18191a;
+    color: #e4e6eb;
+    background-image: none;
+  }
+
+  .dark .card,
+  .dark .bg-white {
+    background-color: #242526;
+    border-color: #3e4042;
+    color: #e4e6eb;
+  }
+
+  .dark .text-slate-900 {
+    color: #e4e6eb;
+  }
+
+  .dark .text-slate-600,
+  .dark .text-slate-500 {
+    color: #b0b3b8;
+  }
+
+  .dark .border-slate-200,
+  .dark .border-slate-100 {
+    border-color: #3e4042;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all duration-200 font-medium cursor-pointer active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply px-5 py-2.5 bg-white text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 shadow-sm hover:shadow transition-all duration-200 font-medium cursor-pointer active:scale-[0.98];
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400;
+  }
+
+  .card {
+    @apply bg-white rounded-xl border border-slate-100 overflow-hidden transition-all duration-300;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .glass {
+    @apply bg-white/80 dark:bg-[#242526]/90 backdrop-blur-md border-b border-white/20 dark:border-white/10;
+  }
+}
